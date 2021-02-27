@@ -4,22 +4,48 @@
     
     
     <%
-	    if (request.getParameter("itemCode") != null)
-	    {
-		    Item itemObj = new Item();
-		    String stsMsg = itemObj.insertItem( request.getParameter("itemCode"),
-		    									request.getParameter("itemName"),
-		    									request.getParameter("itemPrice"),
-		    									request.getParameter("itemDesc"));
-		    session.setAttribute("statusMsg", stsMsg);
+	    if (request.getParameter("itemCode") != null){
+	    	Item itemObj = new Item();
+	    	String stsMsg = "";
+
+
+	    	if(request.getParameter("btnChange").equalsIgnoreCase("save"))
+	    	{
+		    	 stsMsg = itemObj.insertItem( request.getParameter("itemCode"),
+		    										request.getParameter("itemName"),
+		    										request.getParameter("itemPrice"),
+		    										request.getParameter("itemDesc"));
+		    	session.setAttribute("statusMsg", stsMsg);
+	    	}
+			else if(request.getParameter("btnChange").equalsIgnoreCase("saveUpdate")){
+	    		
+				
+			    stsMsg = itemObj.updateItem(   request.getParameter("itemCode"),
+												request.getParameter("itemName"),
+												request.getParameter("itemPrice"),
+												request.getParameter("itemDesc") , 
+												request.getParameter("itemID"));
+		    	session.setAttribute("statusMsg", stsMsg);
+
+	    	}
 	    }
+	    else if(request.getParameter("itemID") != null){
+	    	String stsMsg = "";
+		    Item itemObj2 = new Item();
+
+	    	if(request.getParameter("btnChange").equalsIgnoreCase("remove"))
+		    {
+			    stsMsg = itemObj2.deleteItem(request.getParameter("itemID"));
+			    
+		    } 
+	    	
+	    
+		    out.print(stsMsg);
+
+    	}
     
-	if (request.getParameter("itemID") != null)
-    {
-	    Item itemObj2 = new Item();
-	    String stsMsg = itemObj2.deleteItem(request.getParameter("itemID"));
-		out.print(stsMsg);
-    } 
+		
+		
 	    
      %>
 <!DOCTYPE html>
@@ -31,13 +57,39 @@
 <body>
 
 	<h1>Items Management</h1>
-	<form method="post" action="Items.jsp">
-		 Item code: <input name="itemCode" type="text"><br>
-		 Item name: <input name="itemName" type="text"><br>
-		 Item price: <input name="itemPrice" type="text"><br>
-		 Item description: <input name="itemDesc" type="text"><br>
-		 <input name="btnSubmit" type="submit" value="Save">
-	</form>
+	
+	<%
+	if(request.getParameter("itemID") != null){
+		if(request.getParameter("btnChange").equalsIgnoreCase("update")){
+			Item itemObj3 = new Item();
+			out.print(itemObj3.View(request.getParameter("itemID")));
+			
+		}
+		else{
+			out.print("<form method='post' action='Items.jsp'>"
+					 +"Item code: <input name='itemCode' type='text'><br>"
+					 +"Item name: <input name='itemName' type='text'><br>"
+					 +"Item price: <input name='itemPrice' type='text'><br>"
+					 +"Item description: <input name='itemDesc' type='text'><br>"
+					 +"<input name='btnChange' type='submit' value='Save'>"
+				+"</form>");
+		}
+	}
+	else{
+		out.print("<form method='post' action='Items.jsp'>"
+				 +"Item code: <input name='itemCode' type='text'><br>"
+				 +"Item name: <input name='itemName' type='text'><br>"
+				 +"Item price: <input name='itemPrice' type='text'><br>"
+				 +"Item description: <input name='itemDesc' type='text'><br>"
+				 +"<input name='btnChange' type='submit' value='Save'>"
+			+"</form>");
+		}
+	
+	
+	
+	
+	%>
+	
 	
 		<%
 		 out.print(session.getAttribute("statusMsg"));

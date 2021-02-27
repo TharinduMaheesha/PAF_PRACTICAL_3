@@ -14,7 +14,7 @@ public class Item {
 	 con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/pafpractical3",
 	 "root", "");
 	 //For testing
-	 System.out.print("Successfully connected");
+	// System.out.print("Successfully connected");
 	 }
 	 catch(Exception e)
 	 {
@@ -103,10 +103,11 @@ public class Item {
 			 output += "<td>" + itemDesc + "</td>";
 			 
 			 // buttons
-			 output += "<td><input name='btnUpdate' "
-			 + " type='button' value='Update'></td>"
-			 + "<td><form method='post' action='Items.jsp'>"
-			 + "<input name='btnRemove' "
+			 output += "<td><form method='post' action='Items.jsp'>"
+			 		+ "<input name='btnChange' "
+			 + " type='submit' value='Update'></td>"
+			 + "<td>"
+			 + "<input name='btnChange' "
 			 + " type='submit' value='Remove'>"
 			 + "<input name='itemID' type='hidden' "
 			 + " value='" + itemID + "'>" + "</form></td></tr>";
@@ -149,6 +150,68 @@ public class Item {
 			// TODO Auto-generated catch block
 			 output = "Error while deleting";
 			 System.err.println(e.getMessage());	
+		}
+		
+		return output;
+		
+	}
+	
+	public String updateItem( String code, String name, String price, String desc , String itemID) {
+		
+		String output = "";
+		
+		Connection con = connect();
+		PreparedStatement stat = null;
+		
+		String query =  "UPDATE `items` SET `itemCode` = ?, `itemName` = ?, `itemPrice` = ?, `itemDesc` = ? WHERE `items`.`itemID` = ?";
+		try {
+			stat = con.prepareStatement(query);
+			
+			stat.setString(1, code);
+			stat.setString(2, name);
+			stat.setDouble(3, Double.parseDouble(price));
+			stat.setString(4, desc);
+			System.out.println(itemID);
+			stat.setString(5, itemID);
+			stat.execute();
+
+			output = "Updated successfully";
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			output = "Error updating";
+		}
+		
+		return output;
+		
+	}
+	
+	public String View(String itemID) {
+		
+		Connection con = connect();
+		String output= "";
+		
+		String query = "select * from items where itemID = ?";
+		
+		try {
+			PreparedStatement stat = con.prepareStatement(query);
+			stat.setString(1, itemID);
+			ResultSet rs = stat.executeQuery();
+			while(rs.next()) {
+				output = "<form method='post' action='Items.jsp'>"
+						 +"Item code: <input name='itemCode' type='text' value = "+rs.getString("itemCode")+"><br>"
+						 +"Item name: <input name='itemName' type='text' value = "+rs.getString("itemName")+"><br>"
+						 +"Item price: <input name='itemPrice' type='text' value = "+rs.getDouble("itemPrice")+"><br>"
+						 +"Item description: <input name='itemDesc' type='text' value = "+rs.getString("itemDesc")+"><br>"
+						 +"<input type = 'hidden' name = 'itemID' value = "+itemID+">"
+						 +"<input name='btnChange' type='submit' value='saveUpdate'>"
+					+"</form>";
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return output;
