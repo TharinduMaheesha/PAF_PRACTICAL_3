@@ -31,6 +31,17 @@
 		 <input name="btnSubmit" type="submit" value="Save">
 	</form>
 	
+		<%
+		 out.print(session.getAttribute("statusMsg"));
+		%>
+		
+		<br>
+	
+		<%
+		 Item itemObj = new Item();
+		 out.print(itemObj.readItems());
+		%>
+	
 
 </body>
 </html>

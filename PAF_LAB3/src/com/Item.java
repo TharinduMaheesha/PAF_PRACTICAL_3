@@ -62,9 +62,73 @@ public class Item {
 				return output;
 				
 				
-
-
 	}
+	
+	public String readItems() {
+		
+		Connection con = connect();
+		Statement preparedStmt = null;
+		ResultSet results ;
+		String output = ""; 
+
+		
+		if (con == null)
+		{
+		return "Error connecting to the database";
+		}
+
+		output = "<table border='1'><tr><th>Item Code</th>"
+				 +"<th>Item Name</th><th>Item Price</th>"
+				 + "<th>Item Description</th>"
+				 + "<th>Update</th><th>Remove</th></tr>"; 
+		
+		String query = "select * from items";
+		
+		try {
+			preparedStmt = con.createStatement();
+			results = preparedStmt.executeQuery(query);
+			
+			while (results.next())
+			 {
+			 String itemID = Integer.toString(results.getInt("itemID"));
+			 String itemCode = results.getString("itemCode");
+			 String itemName = results.getString("itemName");
+			 String itemPrice = Double.toString(results.getDouble("itemPrice"));
+			 String itemDesc = results.getString("itemDesc");
+			 
+			 // Add a row into the html table
+			 output += "<tr><td>" + itemCode + "</td>";
+			 output += "<td>" + itemName + "</td>";
+			 output += "<td>" + itemPrice + "</td>"; 
+			 output += "<td>" + itemDesc + "</td>";
+			 
+			 // buttons
+			 output += "<td><input name='btnUpdate' "
+			 + " type='button' value='Update'></td>"
+			 + "<td><form method='post' action='items.jsp'>"
+			 + "<input name='btnRemove' "
+			 + " type='submit' value='Remove'>"
+			 + "<input name='itemID' type='hidden' "
+			 + " value='" + itemID + "'>" + "</form></td></tr>";
+			 }
+			
+			results.close();
+			preparedStmt.close();
+			con.close();
+			
+			 // Complete the html table
+			 output += "</table>"; 
+			 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return output;
+		
+	}
+
+	
 
 
 }
