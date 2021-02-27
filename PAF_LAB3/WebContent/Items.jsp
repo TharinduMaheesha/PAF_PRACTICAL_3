@@ -13,6 +13,14 @@
 		    									request.getParameter("itemDesc"));
 		    session.setAttribute("statusMsg", stsMsg);
 	    }
+    
+	if (request.getParameter("itemID") != null)
+    {
+	    Item itemObj2 = new Item();
+	    String stsMsg = itemObj2.deleteItem(request.getParameter("itemID"));
+		out.print(stsMsg);
+    } 
+	    
      %>
 <!DOCTYPE html>
 <html>
@@ -41,6 +49,8 @@
 		 Item itemObj = new Item();
 		 out.print(itemObj.readItems());
 		%>
+		
+	
 	
 
 </body>

@@ -105,7 +105,7 @@ public class Item {
 			 // buttons
 			 output += "<td><input name='btnUpdate' "
 			 + " type='button' value='Update'></td>"
-			 + "<td><form method='post' action='items.jsp'>"
+			 + "<td><form method='post' action='Items.jsp'>"
 			 + "<input name='btnRemove' "
 			 + " type='submit' value='Remove'>"
 			 + "<input name='itemID' type='hidden' "
@@ -122,6 +122,33 @@ public class Item {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		return output;
+		
+	}
+	
+	public String deleteItem(String itemID) {
+		
+		String output = "";
+		
+		Connection con = connect();
+		PreparedStatement stat = null;
+		
+		String query = "DELETE FROM `items` WHERE `items`.`itemID` = ?";
+		
+		try {
+			
+			stat = con.prepareStatement(query);
+			stat.setString(1, itemID);
+			stat.execute();
+			
+			output = "Deleted successfully";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			 output = "Error while deleting";
+			 System.err.println(e.getMessage());	
 		}
 		
 		return output;
